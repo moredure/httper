@@ -12,18 +12,18 @@ type (
 		Index(echo.Context) error
 	}
 	server struct {
-		*redis.Client
+		*redis.Ring
 	}
 )
 
 func (s *server) Index(ctx echo.Context) error {
-	result, err := s.Incr("counter").Result()
+	result, err := s.Incr(ctx.Request().UserAgent()).Result()
 	if err != nil {
 		return ctx.String(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.String(http.StatusOK, strconv.FormatInt(result, 10))
 }
 
-func NewServer(client *redis.Client) Server {
+func NewServer(client *redis.Ring) Server {
 	return &server{client}
 }

@@ -4,6 +4,7 @@ import "github.com/caarlos0/env"
 
 type Environment struct {
 	RedisURL string `env:"REDIS_URL"`
+	RedisCloudURL string `env:"REDISCLOUD_URL"`
 	Port string `env:"PORT"`
 }
 
