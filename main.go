@@ -11,7 +11,7 @@ func main() {
 		fx.Provide(echo.New),
 		fx.Provide(NewEnvironment),
 		fx.Provide(NewRedisOptions),
-		fx.Provide(redis.NewClient),
+		fx.Provide(redis.NewRing),
 		fx.Provide(NewServer),
 		fx.Invoke(Bootstrap),
 	)
