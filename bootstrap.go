@@ -2,12 +2,14 @@ package main
 
 import (
 	"context"
+	"github.com/go-redis/redis"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
 	"go.uber.org/fx"
+	"go.uber.org/multierr"
 )
 
-func Bootstrap(lc fx.Lifecycle, e *echo.Echo, server Server, env *Environment) {
+func Bootstrap(lc fx.Lifecycle, e *echo.Echo, server Server, env *Environment, ring *redis.Ring) {
 	e.GET("/", server.Index)
 
 	lc.Append(fx.Hook{
@@ -20,7 +22,7 @@ func Bootstrap(lc fx.Lifecycle, e *echo.Echo, server Server, env *Environment) {
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {
-			return e.Shutdown(ctx)
+			return multierr.Combine(e.Shutdown(ctx), ring.Close())
 		},
 	})
 }
